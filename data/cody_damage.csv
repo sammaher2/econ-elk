@@ -1,46 +1,46 @@
 Year,Case,Comments, Species Paid Amount ,Hunt Area Number,Species Name,Herd Unit Name, Species Claimed Amount ,Type of Damage ,Department Recommendation ,Category of Damage 
-2007,7002,Damage to trees was denied.  Landscaping is not covered.,650.00,55,ELK,Cody,1150.00,Alfalfa ,Partial Payment,Stored Crops
-2007,7008,,1377.00,56,ELK,Cody,1379.00,Alfalfa ,Partial Payment ,Growing - Cultivated Crops
-2007,7014,,432.00,61,ELK,Cody,432.00,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2007,7002,Damage to trees was denied.  Landscaping is not covered.,650,55,ELK,Cody,1150,Alfalfa ,Partial Payment,Stored Crops
+2007,7008,,1377,56,ELK,Cody,1379,Alfalfa ,Partial Payment ,Growing - Cultivated Crops
+2007,7014,,432,61,ELK,Cody,432,Alfalfa ,Full Payment ,Growing - Cultivated Crops
 2007,7021,,1211.11,56,ELK,Cody,1211.11,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2007,7054,,487.00,58,ELK,Cody,487.00,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2007,7054,,487,58,ELK,Cody,487,Alfalfa ,Full Payment ,Growing - Cultivated Crops
 2007,7118,,6339.59,56,ELK,Cody,6339.59,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2008,8003,,501.50,56,ELK,Cody,501.50,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2008,8003,,501.5,56,ELK,Cody,501.5,Alfalfa ,Full Payment ,Growing - Cultivated Crops
 2008,8012,,2489.65,56,ELK,Cody,2489.65,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2008,8038,AA=1495.40,2123.80,61,ELK,Cody,2123.80,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2008,8038,NG628.40,2123.80,61,ELK,Cody,2123.80,Native Grass Hay,Full Payment ,Growing - Cultivated Crops
-2008,8106,,5598.00,56,ELK,Cody,5598.00,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2009,9013,,1314.00,56,ELK,Cody,1314.00,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2009,9018,,1463.00,56,ELK,Cody,1463.00,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2009,9148,,2755.20,56,ELK,Cody,2755.20,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2010,10010,,1142.00,56,ELK,Cody,1142.00,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2010,10011,,1843.00,56,ELK,Cody,1843.00,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2010,10127,,1576.00,56,ELK,Cody,1576.00,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2011,11016, ; BD growing AA $986.00,986.00,56,ELK,Cody,986.00,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2011,11017,BM growing AA $1982; BD growing AA $1592,1592.00,56,ELK,Cody,1592.00,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2011,11158,,1769.00,56,ELK,Cody,1769.00,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2008,8038,AA=1495.40,2123.8,61,ELK,Cody,2123.8,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2008,8038,NG628.40,2123.8,61,ELK,Cody,2123.8,Native Grass Hay,Full Payment ,Growing - Cultivated Crops
+2008,8106,,5598,56,ELK,Cody,5598,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2009,9013,,1314,56,ELK,Cody,1314,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2009,9018,,1463,56,ELK,Cody,1463,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2009,9148,,2755.2,56,ELK,Cody,2755.2,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2010,10010,,1142,56,ELK,Cody,1142,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2010,10011,,1843,56,ELK,Cody,1843,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2010,10127,,1576,56,ELK,Cody,1576,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2011,11016, ; BD growing AA $986.00,986,56,ELK,Cody,986,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2011,11017,BM growing AA $1982; BD growing AA $1592,1592,56,ELK,Cody,1592,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2011,11158,,1769,56,ELK,Cody,1769,Alfalfa ,Full Payment ,Growing - Cultivated Crops
 2012,12008,BM = $ 3;071.25; BD = $1;292.55,1292.55,56,ELK,Cody,1292.55,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2013,13003,,1800.00,56,ELK,Cody,1800.00,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2013,13003,,1800,56,ELK,Cody,1800,Alfalfa ,Full Payment ,Growing - Cultivated Crops
 2013,13023,,1674.62,56,ELK,Cody,1674.62,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2014,14003,,2250.00,56,ELK,Cody,2250.00,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2014,14003,,2250,56,ELK,Cody,2250,Alfalfa ,Full Payment ,Growing - Cultivated Crops
 2014,14109,,36.13,56,ELK,Cody,36.13,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2015,15010,,1498.00,56,ELK,Cody,1498.00,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2015,15050,,8615.50,66,ELK,Cody,8615.50,Silage,Full Payment ,Growing - Cultivated Crops
-2015,15107,1705.77 ltr. s/b 4119.37 per attch. Revised ltr 1/27,3747.70,56,ELK,Cody,3757.60,Alfalfa ,Partial Payment,Growing - Cultivated Crops
+2015,15010,,1498,56,ELK,Cody,1498,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2015,15050,,8615.5,66,ELK,Cody,8615.5,Silage,Full Payment ,Growing - Cultivated Crops
+2015,15107,1705.77 ltr. s/b 4119.37 per attch. Revised ltr 1/27,3747.7,56,ELK,Cody,3757.6,Alfalfa ,Partial Payment,Growing - Cultivated Crops
 2016,16001,,1048.75,56,ELK,Cody,1048.75,Alfalfa ,Full Payment ,Growing - Cultivated Crops
 2016,16005,OAT/PEA HAY,1457.37,66,ELK,Cody,1457.37,Other,Full Payment ,Growing - Cultivated Crops
-2016,16107,BD-FM 590.00,590.00,56,ELK,Cody,509.12,Fence ,Full Payment ,Improvements
+2016,16107,BD-FM 590.00,590,56,ELK,Cody,509.12,Fence ,Full Payment ,Improvements
 2016,16107,BD-AA 2064.61,2064.61,56,ELK,Cody,2064.61,Alfalfa ,Full Payment ,Growing - Cultivated Crops
 2017,17006,,1838.35,56,ELK,Cody,1838.35,Alfalfa ,Full Payment ,Growing - Cultivated Crops
 2017,17097,,4326.75,56,ELK,Cody,4326.75,Alfalfa ,Full Payment ,Growing - Cultivated Crops
-2017,17097,,550.00,56,ELK,Cody,550.00,Fence ,Full Payment ,Improvements
-2017,17150,,1400.60,66,ELK,Cody,1412.57,Corn,Partial Payment,Growing - Cultivated Crops
+2017,17097,,550,56,ELK,Cody,550,Fence ,Full Payment ,Improvements
+2017,17150,,1400.6,66,ELK,Cody,1412.57,Corn,Partial Payment,Growing - Cultivated Crops
 2017,17150,,4344.03,66,ELK,Cody,4490.67,Alfalfa ,Partial Payment,Seed Crops
-2018,18003,,2717.40,56,ELK,Cody,2717.40,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2018,18003,,2717.4,56,ELK,Cody,2717.4,Alfalfa ,Full Payment ,Growing - Cultivated Crops
 2018,18078,,10686.63,66,ELK,Cody,10686.63,Corn,Full Payment ,Growing - Cultivated Crops
-2018,18083,,255.80,66,ELK,Cody,255.80,Corn,Full Payment ,Growing - Cultivated Crops
-2018,18118,,291.20,66,ELK,Cody,292.13,Beans,Partial Payment,Growing - Cultivated Crops
-2018,18127,,780.00,56,ELK,Cody,780.00,Grain Hay,Full Payment ,Stored Crops
-2018,18139,,496.60,56,ELK,Cody,496.60,Native Grass Hay,Full Payment ,Growing - Cultivated Crops
-2019,19033,,3180.00,56,ELK,Cody,3180.00,Alfalfa ,Full Payment ,Growing - Cultivated Crops
+2018,18083,,255.8,66,ELK,Cody,255.8,Corn,Full Payment ,Growing - Cultivated Crops
+2018,18118,,291.2,66,ELK,Cody,292.13,Beans,Partial Payment,Growing - Cultivated Crops
+2018,18127,,780,56,ELK,Cody,780,Grain Hay,Full Payment ,Stored Crops
+2018,18139,,496.6,56,ELK,Cody,496.6,Native Grass Hay,Full Payment ,Growing - Cultivated Crops
+2019,19033,,3180,56,ELK,Cody,3180,Alfalfa ,Full Payment ,Growing - Cultivated Crops
 2019,19069,,8537.05,66,ELK,Cody,8537.05,Corn,Full Payment ,Growing - Cultivated Crops

@@ -1,0 +1,342 @@
+---
+title: "SM_elk_explore"
+output: html_document
+date: "2023-01-13"
+---
+
+# Exploration of elk time series data on private/public land in WY
+
+Set your working directory if working outside of our github repo. If you set up our repos as a RProject, it should automatically recognize the file structure.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)  # Keeps code, but not results from appearing in finished file
+
+#rm(list = ls()) #erases global environment when you rerun from start
+
+wd_path <- "C:/repos/econ-elk" 
+
+setwd(wd_path)
+
+knitr::opts_knit$set(root.dir = wd_path) 
+
+```
+
+Load required packages...
+```{r packages, include=FALSE}
+# Make a list of the packages we need, check whether they're installed, and install the ones we're missing...
+
+required.pkg <- c("tidyverse", "magrittr", "lubridate", "rgdal", "RColorBrewer", "stringr", "sf", "kableExtra", "dygraphs")
+pkgs.not.installed <- required.pkg[!sapply(required.pkg, function(p) require(p, character.only=T))]
+if(length(pkgs.not.installed) > 0) install.packages(pkgs.not.installed, dependencies=TRUE)
+library(tidyverse)
+# Load the required libraries...
+lapply(required.pkg, library, character.only = TRUE) 
+
+options(scipen=999)
+```
+
+## Data
+
+## Cody Damage Data
+
+#### Just for viewing.... and some bad figures. This data is what the Cody WGFD gave us for payments made out for elk-caused ag damages.
+
+```{r echo=FALSE}
+getwd()
+data <- read.csv("C:/repos/econ-elk/data/cody_damage.csv")
+
+sum(data$Species.Claimed.Amount) # For fun
+data %<>% mutate(Hunt.Area.Number = factor(Hunt.Area.Number))  #make this a factor so ggplot doesn't freak out
+qplot(Year, Species.Claimed.Amount, colour = Hunt.Area.Number, 
+   data = data, geom = c("point"), ylab = "Amount Claimd in USD", xlab = "Year" , color = factor(Hunt.Area.Number)) +
+   scale_colour_manual(values = c("red", "blue", "green", "purple", "yellow"), name="Hunt Area")
+
+
+yearly <- data %>% group_by(Year) %>% summarise(tot.cost = sum(Species.Paid.Amount)) %>% as.data.frame()
+year.area <- yearly <- data %>% group_by(Year, Hunt.Area.Number) %>% summarise(tot.cost = sum(Species.Paid.Amount)) %>% as.data.frame()
+
+
+qplot(Year, tot.cost, data = yearly, main = "Total Damage Cost Timeline") + 
+      geom_line()
+      
+
+plot <- year.area %>% ggplot((aes(Year, tot.cost))) +
+      geom_point(aes(color=Hunt.Area.Number)) +
+      geom_line(aes(group = Hunt.Area.Number, color = Hunt.Area.Number)) +
+      scale_colour_manual(values = c("red", "blue", "green", "purple", "yellow"), name="Hunt Area") +
+      ggtitle("Total Damages by Hunt Area through Time")
+plot
+
+```
+
+## Cody Elk on Private vs. Public Land (time series analysis)
+
+### Collar Data
+```{r echo=FALSE}
+#collar <- read.csv("ignore/locsCodyElk.csv")
+#saveRDS(collar, "ignore/locsCodyElk.rds")
+collar_raw <- readRDS("ignore/locsCodyElk.rds")
+head(collar_raw)
+dim(collar_raw)  #so there are 1 million entries, going to just select a subsample within each year to play with.
+
+```
+#### Clean Data
+```{r echo=FALSE}
+collar <- collar_raw %>% select(gps_sensors_code, utc_date_time, latitude, longitude, altitude)
+collar %<>% rename(utc_time = utc_date_time) %>%
+                filter(!is.na(longitude)) %>%
+                filter(!is.na(latitude)) %>%
+                filter(!is.na(utc_time)) 
+#We want to add columns for which year and month each of these points occurs in so we can bin them to make a time series of proportions.
+collar %<>% mutate(utc_time = str_sub(utc_time, 1, nchar(utc_time) - 1)) %>%
+            mutate(utc_time = ymd_hms(utc_time)) %>%
+            mutate(year = year(utc_time)) %>%
+            mutate(month = month(utc_time)) %>%
+            mutate(year_month = format(as.Date(utc_time), "%Y-%m"))
+unique(collar$year)
+
+#write.csv(collar, "ignore/collar_clean.csv")
+
+```
+Looks like the only NA data is in the altitude column. We don't need altitude for now, so just going to ignore those Ns.
+
+We have data from the years 2007-2010 and 2014-2020. Awkward gap, but whatever. 
+
+ Let's look at some summary statistics for the collar data.
+```{r echo=FALSE}
+length(unique(collar$gps_sensors_code))  # We have 173 different collar sensor codes
+length(unique(collar$year_month))  #and 122 year-months of data
+```
+
+I made a point file of the cody collar data in ArcPro because it wasn't working in R for some reason... ignore this for now
+```{r echo=FALSE}
+#arc_pts <- readOGR("ignore", layer ="cody_collar") %>%
+#  spTransform(owner@proj4string)
+#write_rds(arc_pts, "ignore/arc_pts.RDS")
+#arc_pts <- readRDS("ignore/arc_pts.RDS")
+#arc_test <- arc_pts[sample(nrow(arc_pts), 1000), ]
+
+#Take a look at it...
+#col <- brewer.pal(n = 8, name = "Set2")
+#plot(owner, col = col, border = NA)
+#points(arc_test, col = c("red"))
+```
+
+### Land Ownership Data
+
+#### Load Data
+
+We have a data set with all different types of land made for Laura and Wenjings analysis. We want to just broadly classify this into public and private for now, so I'm going to condense everything that's public into a single category. 
+
+```{r echo=FALSE}
+#owner_raw <- readOGR("ignore", layer ="Land_ownership_clean") 
+#saveRDS(owner_raw, "ignore/owner.RDS")
+owner <- readRDS("ignore/owner.RDS")
+class <- c("public", "public", "public", "private", "public", "public")
+owner$class <- class
+```
+
+I tried to automate all this in R but it was taking too long, so I just did it in ArcPro and made a layer with just public/private. I have it saved as an RDS and as a shapefile if needed. 
+
+```{r echo=FALSE}
+pub_priv <- readRDS("ignore/pub_priv.RDS")
+plot(pub_priv, col = c("dark green", "yellow"), border = NA)
+```
+Ok, now that we have all our data read in, lets the collar points into a form we can overlay and extract the underlying land type. Let's also plot it to make sure everything looks right. I'm only plotting a subset because this file is massive. 
+```{r echo=FALSE}
+#ll <- CRS("+init=epsg:4326")
+#crs <- '+proj=utm +zone=12 +datum=WGS84 +units=m +no_defs'
+crs <- CRS("+proj=longlat")
+cody_pts <- SpatialPointsDataFrame(
+  data.frame("x" = collar$longitude, "y" = collar$latitude),
+  data.frame(collar[,c(1:2,5:8)]), proj4string = crs) %>%
+  spTransform(pub_priv@proj4string)
+writeOGR(cody_pts, "ignore", "cody_pts_utm", driver = "ESRI Shapefile", overwrite_layer=TRUE)
+
+
+
+
+#library(sf)
+#crs <- '+proj=utm +zone=12 +datum=WGS84 +units=m +no_defs'
+#pts <- collar %>% select(longitude,latitude)
+#cody_pts <- SpatialPointsDataFrame(coords = pts, data = collar)
+#cody_pts <- SpatialPoints(coords = pts)
+
+#library(OpenStreetMap)
+test <- cody_pts[sample(nrow(cody_pts), 1000), ]
+plot(pub_priv, col = c("dark green", "grey"), border = NA)
+points(test)
+```
+The next thing we have to do is extract whether the point is on public or private land. This is taking one billion years to run, so I am going to just do it for a subset.
+
+
+This chunk makes a progress bar for the long ass process of extracting pub v private for the entire data set. I think the progress bar actually slows down the analysis, so lets skip this for now. I have it set so it doesn't run right now. 
+```{r eval=FALSE, include=FALSE}
+library(progress)
+
+n_iter <- 100
+
+pb <- progress_bar$new(format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
+                       total = n_iter,
+                       complete = "=",   # Completion bar character
+                       incomplete = "-", # Incomplete bar character
+                       current = ">",    # Current bar character
+                       clear = FALSE,    # If TRUE, clears the bar when finish
+                       width = 100)      # Width of the progress bar
+
+for(i in 1:n_iter) {
+  
+    # Updates the current state
+    pb$tick()
+  
+    #---------------------
+  cody_all <- test %over% pub_priv
+    #---------------------
+  
+    Sys.sleep(0.1) # Remove this line and add your code
+  
+    #---------------------
+  
+}
+
+
+saveRDS(cody_all, "ignore/cody_all.RDS")
+
+```
+Let's start by seeing what we can do with a subset of 10,000 points. that's less than 1% of our data. Here, we add a field for type of ownership by extracting values from the pub_priv layer.
+
+For now, I'm telling R not to run this, because it takes forever. instead, just reading it in as a RDS
+```{r eval=FALSE, include=FALSE}
+cody_smol <- cody_pts[sample(nrow(cody_pts), 10000), ] 
+t <- cody_smol %over% pub_priv
+test <- cody_smol
+test[[1]]
+
+# cody_smol$owner <- t  Ok, apparently this just tacks a data frame onto it instead of creating an attribute, which means you can't write a shapefile from it. 
+saveRDS(cody_smol, "ignore/cody_smol")
+
+cody_smol <- readRDS("ignore/cody_smol")
+writeOGR(cody_smol, "ignore/cody_smol", driver = "ESRI Shapefile", overwrite_layer=TRUE)
+cody_smol %>% mutate(public = ifelse(owner == "public",1,0))
+sum(cody_smol$public)/nrow(cody_smol)
+```
+
+## Data Visualization
+OK screw doing this in R, I extracted all the points in like 2 minutes on ArcMap Pro. The data set I'm loading in now is the original collar data with an additional attribute that gives "1" for being on public land and a "2" for being on private land. I made in by working between R and ArcPro in the silliest way possible. 
+
+Let's look at:
+* Number of elk we have in each year
+* Proportion of points in each year
+* Timeline of points within each year
+
+```{r echo=FALSE}
+#cody <- readOGR("ignore", layer = "cody_utm_owner")
+#write_rds(cody, "ignore/cody.RDS")
+cody_full <- readRDS("ignore/cody.RDS")
+cody <- as.data.frame(cody_full)
+cody %<>% rename(sensor = gps_sn_, utc_time = utc_tim, altitude = altitud, 
+                 public = RASTERVALU, longitude = coords.x1, latitude = coords.x2)
+                 
+#looks like there's a bunch of sneaky little NAs (749 total). I went back to the map and all of those NAs are in the Bighorns, which is public land but for some reason missing from the data set. We are just going to reassign those to public
+summary(cody$public == "-9999")
+cody$public <- ifelse(cody$public == 2, 0, 1) #for some reason tidy syntax isn't working with ifelse() 
+cody %<>% na.omit() %>% mutate(dummy = 1)     # there's a small handful of data points missing a date, so just snipping those   
+sum(cody$public)/sum(cody$dummy)   # 75% of occurrences across the entire data set are on public land
+sum(cody$public)/nrow(cody) 
+
+
+bycollar <- aggregate(x =  cody[,c("public")], by = list(cody$sensor, cody$year), FUN = mean)
+#byyear %<>% rename(year = Group.1) %>% mutate(public = public/)       
+  
+```
+
+
+### Yearly 
+https://r-graph-gallery.com/279-plotting-time-series-with-ggplot2.html
+```{r echo=FALSE}
+
+byyear <- aggregate(x =  cody[,c("public")], by = list(cody$year), FUN = mean) %>% rename(c(year = Group.1, public.land = x)) %>% 
+                                                                                   mutate(public.land = 100*public.land) %>%
+                                                                                   mutate(class.date = ymd(year, truncated = 2L))
+#library(kableExtra)
+knitr::kable(byyear, col.names = c("Year", "Public", "Class:Date"), align = "cc", format = "html", caption = "Table 1 Proporiton of Time Spent by Cody Herd on Public Land Annually",
+             table.attr = "style='width:100%;'") 
+
+col <- brewer.pal(n = 8, name = "Set2")
+
+year.plot <- ggplot(byyear, aes(x = class.date, y = public.land )) +
+  geom_line(color="steelblue", linewidth = 3) +
+  #geom_point(color = c("green"), size = 4, aes(shape = factor(year), colour = factor(year))) +
+  geom_point(color = c("dark green"), size = 8, shape = 20) +
+  xlab("") +
+  scale_x_date(date_labels = "%Y") +
+  ylim(0,100) +
+  ylab("%  Time Spent on Public  Land")
+year.plot
+
+#p <- dygraph(byyear) %>%
+  ## ylab("% on Public Land") 
+```
+### Monthly
+
+```{r echo=FALSE}
+#library(kableExtra)
+bymonth <- aggregate(x =  cody[,c("public")], by = list(cody$yr_mnth), FUN = mean) %>% rename(c(month = Group.1, public.land = x)) %>% 
+                                                                                   mutate(public.land = 100*public.land) %>%
+                                                                                   mutate(class.date = ymd(month, truncated = 2L))
+knitr::kable(bymonth, col.names = c("Month", "Public", "Class:Date"), align = "cc", format = "html", caption = "Table 1 Proporiton of Time Spent by Cody Herd on Public Land Monthly",
+             table.attr = "style='width:100%;'") 
+
+month.plot <- ggplot(bymonth, aes(x = class.date, y = public.land )) +
+  geom_line(color="steelblue", size = 1) +
+  #geom_point(color = c("green"), size = 4, aes(shape = factor(year), colour = factor(year))) +
+  geom_point(color = c("blue"), size = 2, shape = 20) +
+  xlab("") +
+  scale_x_date(date_labels = "%Y") +
+  ylim(0,100) +
+  ylab("%  Time Spent on Public  Land")
+month.plot
+
+```
+### Individual COllars
+
+```{r echo=FALSE}
+bycollar <- aggregate(x =  cody[,c("public")], by = list(cody$yr_mnth, cody$sensor), FUN = mean) %>% 
+                  rename(c(year = Group.1, public.land = x, sensor = Group.2)) %>% 
+                  mutate(public.land = 100*public.land) %>%
+                  mutate(class.date = ymd(year, truncated = 2L))
+
+knitr::kable(bymonth, col.names = c("Year", "Sensor", "Public", "Class:Date"), align = "cc", format = "html", caption = "Table 1 Proporiton of Time Spent by Cody Herd on Public Land Monthly",
+             table.attr = "style='width:100%;'") 
+
+
+month.plot <- ggplot(bycollar, aes(x = class.date, y = public.land )) +
+ # geom_line(color="steelblue", size = 1) +
+  #geom_point(color = c("green"), size = 4, aes(shape = factor(year), colour = factor(year))) +
+  geom_point(color = c("blue"), size = 2, shape = 20) +
+  xlab("") +
+  scale_x_date(date_labels = "%Y") +
+  ylim(0,100) +
+  ylab("%  Time Spent on Public  Land by Collar")
+month.plot
+
+
+```
+
+How data do we have:
+* Per collar?
+* Per month?
+* Collars per year?
+```{r echo=FALSE}
+pts.sensor <- aggregate(x =  cody[,c("dummy")], by = list(cody$sensor), FUN = sum) %>% arrange(x) %>% rename(sensor = Group.1)
+kable(pts.sensor)
+
+pts.year <- aggregate(x =  cody[,c("dummy")], by = list(cody$year), FUN = sum) %>% arrange(x) %>% rename(sensor = Group.1)
+kable(pts.year)
+
+sensor.year <- aggregate(x =  cody[,c("dummy")], by = list(cody$year), FUN = sum) %>% arrange(x) %>% rename(sensor = Group.1)
+kable(pts.year)
+
+
+```
+
